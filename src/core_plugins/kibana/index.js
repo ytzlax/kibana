@@ -10,6 +10,7 @@ import settings from './server/routes/api/settings';
 import scripts from './server/routes/api/scripts';
 import * as systemApi from './server/lib/system_api';
 import handleEsError from './server/lib/handle_es_error';
+import { registerSavedObjectRoutes } from './server/saved_objects';
 import mappings from './mappings.json';
 
 const mkdirp = Promise.promisify(mkdirpNode);
@@ -145,6 +146,7 @@ module.exports = function (kibana) {
       search(server);
       settings(server);
       scripts(server);
+      registerSavedObjectRoutes(server);
 
       server.expose('systemApi', systemApi);
       server.expose('handleEsError', handleEsError);
