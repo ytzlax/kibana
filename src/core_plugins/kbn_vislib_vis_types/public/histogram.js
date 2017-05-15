@@ -1,12 +1,12 @@
 import { VisVisTypeProvider } from 'ui/vis/vis_type';
-import { VislibVisTypeProvider } from 'ui/vis/vis_types/vislib_vis_type';
+import { VislibVisTypeVislibVisTypeProvider } from 'ui/vislib_vis_type/vislib_vis_type';
 import { VisSchemasProvider } from 'ui/vis/schemas';
 import pointSeriesTemplate from 'plugins/kbn_vislib_vis_types/editors/point_series.html';
 import image from './images/icon-vertical.svg';
 
 export default function PointSeriesVisType(Private) {
   const VisType = Private(VisVisTypeProvider);
-  const VislibVisType = Private(VislibVisTypeProvider);
+  const VislibVisType = Private(VislibVisTypeVislibVisTypeProvider);
   const Schemas = Private(VisSchemasProvider);
 
   return new VislibVisType({
@@ -15,9 +15,8 @@ export default function PointSeriesVisType(Private) {
     image,
     description: 'Assign a continuous variable to each axis',
     category: VisType.CATEGORY.BASIC,
-    visConfig: {
+    params: {
       defaults: {
-        type: 'histogram',
         grid: {
           categoryLines: false,
           style: {
@@ -30,7 +29,8 @@ export default function PointSeriesVisType(Private) {
             type: 'category',
             position: 'bottom',
             show: true,
-            style: {},
+            style: {
+            },
             scale: {
               type: 'linear'
             },
@@ -48,7 +48,8 @@ export default function PointSeriesVisType(Private) {
             type: 'value',
             position: 'left',
             show: true,
-            style: {},
+            style: {
+            },
             scale: {
               type: 'linear',
               mode: 'normal'
@@ -89,34 +90,31 @@ export default function PointSeriesVisType(Private) {
         defaultYExtents: false,
         setYExtents: false
       },
-    },
-    editorConfig: {
-      collections: {
-        positions: ['top', 'left', 'right', 'bottom'],
-        chartTypes: [{
-          value: 'line',
-          text: 'line'
-        }, {
-          value: 'area',
-          text: 'area'
-        }, {
-          value: 'histogram',
-          text: 'bar'
-        }],
-        axisModes: ['normal', 'percentage', 'wiggle', 'silhouette'],
-        scaleTypes: ['linear', 'log', 'square root'],
-        chartModes: ['normal', 'stacked'],
-        interpolationModes: [{
-          value: 'linear',
-          text: 'straight',
-        }, {
-          value: 'cardinal',
-          text: 'smoothed',
-        }, {
-          value: 'step-after',
-          text: 'stepped',
-        }],
-      },
+      positions: ['top', 'left', 'right', 'bottom'],
+      chartTypes: [{
+        value: 'line',
+        text: 'line'
+      }, {
+        value: 'area',
+        text: 'area'
+      }, {
+        value: 'histogram',
+        text: 'bar'
+      }],
+      axisModes: ['normal', 'percentage', 'wiggle', 'silhouette'],
+      scaleTypes: ['linear', 'log', 'square root'],
+      chartModes: ['normal', 'stacked'],
+      interpolationModes: [{
+        value: 'linear',
+        text: 'straight',
+      }, {
+        value: 'cardinal',
+        text: 'smoothed',
+      }, {
+        value: 'step-after',
+        text: 'stepped',
+      }],
+      editor: pointSeriesTemplate,
       optionTabs: [
         {
           name: 'advanced',

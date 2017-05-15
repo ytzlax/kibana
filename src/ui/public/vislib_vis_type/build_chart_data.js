@@ -1,10 +1,34 @@
 import { AggResponseIndexProvider } from 'ui/agg_response/index';
 import { AggResponseTabifyTableProvider } from 'ui/agg_response/tabify/_table';
 
-
-const basicResponseHandler = function (Private) {
+export function VislibVisTypeBuildChartDataProvider(Private) {
   const aggResponse = Private(AggResponseIndexProvider);
   const Table = Private(AggResponseTabifyTableProvider);
+
+  return function (esResponse) {
+    const vis = this.vis;
+
+    if (vis.isHierarchical()) {
+      // the hierarchical converter is very self-contained (woot!)
+      return aggResponse.hierarchical(vis, esResponse);
+    }
+
+    const tableGroup = aggResponse.tabify(vis, esResponse, {
+      canSplit: true,
+      asAggConfigResults: true
+    });
+
+    let converted = convertTableGroup(vis, tableGroup);
+    if (!converted) {
+      // mimic a row of tables that doesn't have any tables
+      // https://github.com/elastic/kibana/blob/7bfb68cd24ed42b1b257682f93c50cd8d73e2520/src/kibana/components/vislib/components/zero_injection/inject_zeros.js#L32
+      converted = { rows: [] };
+    }
+
+    converted.hits = esResponse.hits.total;
+
+    return converted;
+  };
 
   function convertTableGroup(vis, tableGroup) {
     const tables = tableGroup.tables;
@@ -40,36 +64,6 @@ const basicResponseHandler = function (Private) {
   }
 
   function convertTable(vis, table) {
-    return vis.type.responseConverter ? vis.type.responseConverter(vis, table) : table;
+    return vis.type.responseConverter(vis, table);
   }
-
-  return {
-    name: 'basic',
-    handler: function (vis, response) {
-      return new Promise((resolve) => {
-        if (vis.isHierarchical()) {
-          // the hierarchical converter is very self-contained (woot!)
-          return aggResponse.hierarchical(vis, response);
-        }
-
-        const tableGroup = aggResponse.tabify(vis, response, {
-          canSplit: true,
-          asAggConfigResults: true
-        });
-
-        let converted = convertTableGroup(vis, tableGroup);
-        if (!converted) {
-          // mimic a row of tables that doesn't have any tables
-          // https://github.com/elastic/kibana/blob/7bfb68cd24ed42b1b257682f93c50cd8d73e2520/src/kibana/components/vislib/components/zero_injection/inject_zeros.js#L32
-          converted = { rows: [] };
-        }
-
-        converted.hits = response.hits.total;
-
-        resolve(converted);
-      });
-    }
-  };
-};
-
-export { basicResponseHandler };
+}

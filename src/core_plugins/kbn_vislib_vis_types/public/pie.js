@@ -1,12 +1,12 @@
 import { VisVisTypeProvider } from 'ui/vis/vis_type';
-import { VislibVisTypeProvider } from 'ui/vis/vis_types/vislib_vis_type';
+import { VislibVisTypeVislibVisTypeProvider } from 'ui/vislib_vis_type/vislib_vis_type';
 import { VisSchemasProvider } from 'ui/vis/schemas';
 import pieTemplate from 'plugins/kbn_vislib_vis_types/editors/pie.html';
 import image from './images/icon-pie.svg';
 
 export default function HistogramVisType(Private) {
   const VisType = Private(VisVisTypeProvider);
-  const VislibVisType = Private(VislibVisTypeProvider);
+  const VislibVisType = Private(VislibVisTypeVislibVisTypeProvider);
   const Schemas = Private(VisSchemasProvider);
 
   return new VislibVisType({
@@ -15,32 +15,27 @@ export default function HistogramVisType(Private) {
     image,
     description: 'Compare parts of a whole',
     category: VisType.CATEGORY.BASIC,
-    visConfig: {
+    params: {
       defaults: {
-        type: 'pie',
         addTooltip: true,
         addLegend: true,
         legendPosition: 'right',
         isDonut: false
       },
-    },
-    editorConfig: {
-      collections: {
-        legendPositions: [{
-          value: 'left',
-          text: 'left',
-        }, {
-          value: 'right',
-          text: 'right',
-        }, {
-          value: 'top',
-          text: 'top',
-        }, {
-          value: 'bottom',
-          text: 'bottom',
-        }],
-      },
-      editorTemplate: pieTemplate
+      legendPositions: [{
+        value: 'left',
+        text: 'left',
+      }, {
+        value: 'right',
+        text: 'right',
+      }, {
+        value: 'top',
+        text: 'top',
+      }, {
+        value: 'bottom',
+        text: 'bottom',
+      }],
+      editor: pieTemplate
     },
     responseConverter: false,
     hierarchicalData: true,
