@@ -1,8 +1,14 @@
 export default function (_) {
 
   const DOT_PREFIX_RE = /(.).+?\./g;
+  const EXPRESSION_RE = /\{\{(.*?)\}\}/g;
+  const defaultEscape = _.escape;
 
   _.mixin({
+
+    escape(value) {
+      return defaultEscape(value).replace(EXPRESSION_RE, '$1');
+    },
 
     /**
      * Convert a value to a presentable string
